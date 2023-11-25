@@ -5,9 +5,9 @@
   </h1>
     <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/SEED.png" width="40">
     <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/Layer2.png" width="40">
-    <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/StarknetEs.png" width="40">
-
-
+    <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/StarknetEs.png" width="40"/>
+    <br/><br/>
+    
 <a href="https://github.com/Starknet-Es">
 <img src="https://img.shields.io/badge/Overview Starknet Es-Github-yellow"
 />
