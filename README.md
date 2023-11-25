@@ -2,7 +2,7 @@
 <img alt="starknet logo" src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/workshop_3.jpg" width="800" >
   <h1 style="font-size: larger;">
   <strong> Workshop de Cero a Héroe:</strong>
-   <br/><br/> 
+   <br/>
   <strong> SEED Latam-Layer 2 en Español-StarknetEs </strong> 
    
   </h1>
