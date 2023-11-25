@@ -1,32 +1,51 @@
 <div align="center">
 <img alt="starknet logo" src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/workshop_3.jpg" width="800" >
   <h1 style="font-size: larger;">
-  <strong> Workshop de Cero a Héroe: Layer 2 en Español-SEED Latam-StarknetEs </strong> 
+  <strong> Workshop de Cero a Héroe:</strong>
+   <br/><br/> 
+  <strong> SEED Latam-Layer 2 en Español-StarknetEs </strong> 
+   
   </h1>
     <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/SEED.png" width="40">
     <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/Layer2.png" width="40">
     <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/StarknetEs.png" width="40"/>
     <br/><br/>
-    
-<a href="https://github.com/Starknet-Es">
-<img src="https://img.shields.io/badge/Overview Starknet Es-Github-yellow"
-/>
-<a href="">
-<img src="https://img.shields.io/badge/Jueves Cairo-Youtube-red?logo=youtube"/>
+
+
+<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<img src="https://img.shields.io/badge/Workshop L2: 1ª Clase-Youtube-red?logo=youtube"/>
 </a>
+<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<img src="https://img.shields.io/badge/Workshop L2: 2ª Clase-Youtube-red?logo=youtube"/>
+</a>
+<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<img src="https://img.shields.io/badge/Workshop L2: 3ª Clase-Youtube-red?logo=youtube"/>
+</a>
+<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<img src="https://img.shields.io/badge/Workshop L2: 4ª Clase-Youtube-red?logo=youtube"/>
+</a>
+    <br/><br/>
+</a>
+<a href="https://twitter.com/SEEDLatam">
+<img src="https://img.shields.io/twitter/follow/SEED Latam?style=social"/>
+</a>
+<a href="https://twitter.com/Layer2es">
+<img src="https://img.shields.io/twitter/follow/Layer 2 en Español?style=social"/>
 </a>
 <a href="https://twitter.com/StarkNetEs">
 <img src="https://img.shields.io/twitter/follow/StarknetEs?style=social"/>
 </a>
-<a href="">
-<img src="https://img.shields.io/twitter/follow/DeFi_LaB?style=social"/>
+    <br/><br/>
+<a href="https://github.com/Layer2es">
+<img src="https://img.shields.io/badge/Layer2 Es-Github-blue"
+/>
+<a href="https://github.com/Starknet-Es">
+<img src="https://img.shields.io/badge/Starknet Es-Github-yellow"
+/>
+<a href="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet">
+<img src="https://img.shields.io/github/stars/Layer2es/Workshop-Mensajes-Ethereum-Starknet?style=social"/>
 </a>
-<a href="https://twitter.com/Nadai02010">
-<img src="https://img.shields.io/twitter/follow/Nadai02010?style=social"/>
-</a>
-<a href="https://github.com/Nadai2010/Nadai-Workshop-DefiLab-StarknetEs">
-<img src="https://img.shields.io/github/stars/Nadai2010/Nadai-Workshop-DefiLab-StarknetEs?style=social"/>
-</a>
+
 
 </div>
 
