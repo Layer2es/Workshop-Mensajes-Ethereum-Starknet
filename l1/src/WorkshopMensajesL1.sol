@@ -32,7 +32,8 @@ contract WorkshopMensajesL1 {
        @notice Envía un mensaje al contrato de Starknet.
 
        @param contractAddress La dirección del contrato en Starknet WorkshopMensajeL2.
-       @param selector La función l1_handler del contrato a llamar, en este caso .
+       @param selector La función l1_handler del contrato a llamar, en este caso 
+       "recibir_mensaje_valor_l1" = "0x726563696269725f6d656e73616a655f76616c6f725f6c31".
        @param payload Los datos serializados que se enviarán.
 
        @dev Ten en cuenta que Cairo solo entiende felts252.
