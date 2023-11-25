@@ -1,11 +1,11 @@
 <div align="center">
-<img alt="starknet logo" src="/Workshop-Mensajes-Ethereum-Starknet/assets/workshop_3.jpg" width="800" >
+<img alt="starknet logo" src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/workshop_3.jpg" width="800" >
   <h1 style="font-size: larger;">
   <strong> Workshop de Cero a Héroe: Layer 2 en Español-SEED Latam-StarknetEs </strong> 
   </h1>
-    <img src="/Workshop-Mensajes-Ethereum-Starknet/assets/SEED.png" width="40">
-    <img src="/Workshop-Mensajes-Ethereum-Starknet/assets/Layer2.png" width="40">
-    <img src="/Workshop-Mensajes-Ethereum-Starknet/assets/StarknetEs.png" width="40">
+    <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/SEED.png" width="40">
+    <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/Layer2.png" width="40">
+    <img src="https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet/blob/main/assets/StarknetEs.png" width="40">
 
 
 <a href="https://github.com/Starknet-Es">
