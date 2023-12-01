@@ -1,12 +1,12 @@
 [package]
 name = "workshop_l2"
 version = "1.0.0"
-cairo-version = "2.3.0"
+cairo-version = "2.3.1"
 authors = ["L2 Español, SEED Latam, StarknetEs - Starknet"]
 description = "Workshop de 0 a Heroe. Envio de mensajes entre Ethereum <-> Starknet"
 
 [dependencies]
-starknet = ">=2.3.0"
+starknet = ">=2.3.1"
 
 [[target.starknet-contract]]
 sierra = true
