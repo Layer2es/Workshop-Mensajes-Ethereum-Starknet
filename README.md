@@ -97,21 +97,6 @@
 
 ---
 
-# Workshop-Mensajes-Ethereum-Starknet
-
-- Instalar Scarb
-- Instalar Starkli
-- Instalar Katana
-- Crear Cuenta
-- Declarar y desplegar Hola
-- Remix L1 y L2
-- Envios de Mensajes
-- Probar Katana con Hola
-
-- Cuenta Workshop 
-0x01019f481359b39d0673b37502b898a5c9d9ddece0948596d3a191664c1eaa08
-
-   
 
 ## Pre-requisitos
 Antes de empezar, asegúrese de tener instalados los siguientes pre-requisitos en su sistema:
@@ -192,6 +177,7 @@ starkli --version
 **Para actualizar a la última versión de Starkli, simplemente siga los pasos anteriores nuevamente.**
 
 ---
+
 ## Instalación de Scarb
 [Scarb](https://docs.swmansion.com/scarb/) es el administrador de paquetes para Cairo. Entre otras cosas, nos permite compilar código Cairo a Sierra, el lenguaje intermedio entre el Cairo de alto nivel y el ensamblador Cairo de bajo nivel (CASM). Para usuarios de macOS y Linux, abra su terminal y ejecute el siguiente comando:
 
@@ -243,10 +229,6 @@ starkli --version
 
 ![Alt text](assets/image-7.png)
 
----
-
-
-¡Claro! Aquí tienes una versión mejorada:
 
 ---
 
@@ -317,87 +299,134 @@ Starkli emplea `firmantes` o `signers` para autorizar transacciones. Estos puede
 
 ### Opción A: Crear Cuenta, Firmante y Descriptor de Cuenta con OZ
 
-1. **Crear un Firmante**: Utilice Starkli para generar un archivo `keystore` que proteja la clave privada de su billetera inteligente:
+1. **Crear un Firmante:** Utilice Starkli para generar un archivo `keystore` que proteja la clave privada de su billetera inteligente. Para ello, crearemos una carpeta `starkli-wallets/deployer` que podrá encontrar oculta en sus archivos. En `Linux`, puede mostrar archivos ocultos presionando `Ctrl + h`. En este paso se le pedirá una contraseña que podrá añadir o dejar vacía. Por seguridad, **la contraseña permanece oculta**, por lo que no verá en su pantalla su contraseña, pero estará escribiéndola.
+
 
     ```bash
     mkdir -p ~/.starkli-wallets/deployer
-    starkli signer keystore new ~/.starkli-wallets/deployer/Signer_Workshop.json
+    starkli signer keystore new ~/.starkli-wallets/deployer/Signer_WorkshopL2.json
     ```
 
-    Esto generará un archivo cifrado llamado `Signer_Workshop.json`.
+    Esto generará un archivo cifrado llamado `Signer_WorkshopL2.json` (Modifique el nombre del Signer que usted quiera) y lo guardará en la ruta especificada `~/.starkli-wallets/deployer`, además de su `Public Key`.
 
-2. **Establecer Variable de Entorno**: Cree una variable de entorno `STARKNET_KEYSTORE` para facilitar la gestión de claves:
+    ![Alt text](assets/image-28.png)
+
+
+2. **Establecer Variable de Entorno:** Cree una variable de entorno `STARKNET_KEYSTORE` para facilitar la gestión de claves, y ejecútelo en su misma terminal, además deberemos exportar nuestro [RPC](https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet#rpc) que tendrá diversas opciones, recomendamos crearse el suyo con su propia `API KEY` y no depender de públicos, ahora usaremos uno `Open de Blast` para este workshop:
 
     ```bash
-    export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Workshop.json
+    export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_WorkshopL2.json
+    export STARKNET_RPC="https://starknet-testnet.public.blastapi.io"
     ```
 
-3. **Crear Descriptor de Cuenta**: Crea la cuenta que estará controlada por el `signer` que se ha creado:
+3. **Crear Descriptor de Cuenta:** Crea la cuenta que estará controlada por el `signer` que se ha creado:
 
     ```bash
-    starkli account oz init ~/.starkli-wallets/deployer/Account_Workshop.json
+    starkli account oz init ~/.starkli-wallets/deployer/Account_WorkshopL2.json
     ```
 
-    Este archivo `Account_Workshop.json` estará en estado `undeployed`, listo para ser desplegado después de recibir saldo.
+    Este archivo `Account_WorkshopL2.json` estará en estado `undeployed`, listo para ser desplegado después de recibir saldo.
+
+    ![Alt text](assets/image-29.png)
+
+    ![Alt text](assets/image-33.png)
+
+4. **Fondear Cuenta:** Nuestro Contrato de Cuenta necesita fondos para cobrar vida, en este caso usaremos el [Faucet](https://faucet.goerli.starknet.io/), puede revisar las otras pociones [aquí](https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet#conseguir-faucet)
+
+    <img src="assets/image-32.png" alt="Image 1" style="width: 200px; height: auto;">
+    <img src="assets/image-30.png" alt="Image 2" style="width: 200px; height: auto;">
+    <img src="assets/image-31.png" alt="Image 3" style="width: 200px; height: auto;">
+
+5. **Desplegar Cuenta:** Ahora todo está listo para desplegar nuestro Contrato de Cuenta del Estándar de OZ ejecutando el comando `starkli account deploy` con la ruta donde añadimos nuestra Cuenta.
+
+    ```bash 
+    starkli account deploy /home/nadai/.starkli-wallets/deployer/Account_WorkshopL2.json
+    ```
+
+    Primeramente, se le preguntará si tiene fondos. Una vez confirmado, presione Enter y su cuenta debería ser desplegada. 
+
+    ![Alt text](assets/image-35.png)
+
+    Ahora podrá revisar su descriptor de cuenta como ha pasado de `undeployed` a `deployed`. Ya tiene todo listo para empezar a crear sus primeros contratos en Starknet.
+
+    ![Alt text](assets/image-36.png)
+
 
 ### Opción B: Crear Cuenta, Firmante y Descriptor de Cuenta con Argent o Braavos
 
 1. **Crear Billetera Inteligente**: Siga las instrucciones proporcionadas por las extensiones del navegador [Braavos](https://braavos.app/download-braavos-wallet/) o [Argent X](https://www.argent.xyz/argent-x/) para crear una billetera inteligente.
 
-2. **Exportar Clave Privada**: Exporte la clave privada desde la configuración de su cuenta en Braavos o Argent X. Luego, cree un firmante con Starkli utilizando esta clave privada con el siguiente comando:
+2. **Exportar Clave Privada**: Exporte la clave privada desde la configuración de su cuenta en Braavos o Argent X, en este Workshop hemos usado Braavos. 
+
+    * **Para Argent X:** Puede encontrarla en la sección "Configuración" → Seleccione su cuenta → "Exportar clave privada".
+    * **Para Braavos:** Puede encontrarla en la sección "Configuración" → "Privacidad y seguridad" → "Exportar clave privada".
+
+    <img src="assets/image-37.png" alt="Image 1" style="width: 200px; height: auto;">
+    <img src="assets/image-38.png" alt="Image 2" style="width: 200px; height: auto;">
+
+
+3. **Cree un firmante:** Con Starkli y utilizando la clave privada que tendrá que añadir, más un password si quiere añadir una contraseña para su seguridad, esto configurará su Contrato de Cuenta desde Argent o Braavos, para ello creemos el `signer` con el siguiente comando:
 
     ```bash
-    starkli signer keystore from-key ~/.starkli-wallets/deployer/Braavos_Signer.json
+    starkli signer keystore from-key ~/.starkli-wallets/deployer/Signer_Braavos.json
     ```
+
+    ![Alt text](assets/image-39.png)
 
     Con esta parte, habremos configurado nuestro firmante, y a continuación, definiremos cómo utilizaremos nuestro Contrato de Cuenta creando un Descriptor de Cuenta con la información necesaria.
 
-3. **Crear Descriptor de Cuenta**: Crea la cuenta que estará controlada por el `signer` que se ha creado:
+3. **Crear Descriptor de Cuenta**: Crea la cuenta que estará controlada por el `signer` que se ha creado, pero primero deberemos exportar un punto de RPC para que pueda conseguir los datos de nuestro contrato de cuenta para crear el Descriptor usando el siguiente comando:
 
     ```bash
-    touch ~/.starkli-wallets/deployer/Braavos_Account.json
-    ```
-
-    Deberemos exportar un punto de RPC para que pueda conseguir los datos de nuestro contrato de cuenta para crear el Descriptor usando el siguiente comando:
-
-    ```bash
-    export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
+     export STARKNET_RPC="https://starknet-testnet.public.blastapi.io"
     ```
 
     Ahora podremos pasar el comando con la dirección de nuestra cuenta de Braavos o Argent para crear nuestro Descriptor de Cuenta:
 
     ```bash
-    starkli account fetch 0x00a8dab44b588c7ecc36f4f6a791f0f1148079695f487310efae66f650b266d0 --output ~/.starkli-wallets/deployer/Braavos_Account.json
+    starkli account fetch 0x027f68d0d0f474b1a25f359a42dc49a3003a3522d71765a5e7658e68520d7826 --output ~/.starkli-wallets/deployer/Account_Braavos.json
     ```
 
-    ![Alt text](image-24.png)
+    ![Alt text](assets/image-40.png)
 
     Esto nos dará nuestro archivo `.json` con toda la información relevante para poder usar nuestra cuenta recien exportada.
 
-    ![Alt text](image-25.png)
-
-Con estas 2 opciones conseguimos tener nuestra cuenta exportada e integrada en nuestro flujo de trabajo para desarrollar con ellas.
-
-Acceda directamente [aquí]() si quiere ir directamente a diversas formas de trabajar con las variables de entorno de la forma que vea más útil.
+    ![Alt text](assets/image-41.png)
 
 ---
 
+Con estas 2 opciones conseguimos tener nuestra cuenta exportada e integrada en nuestro flujo de trabajo para desarrollar con ellas.
 
-## Integrando Scarb en tu Flujo de Desarrollo 
-Los siguientes pasos ilustran un flujo de trabajo típico para desarrollar un contrato Starknet utilizando Scarb, aunque si ha clonado este repositorio y quiere sólo seguir los procesos, pase directamente al paso 5.
+Acceda directamente [aquí](https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet#variables-de-entorno) si quiere ir directamente a diversas formas de trabajar con las variables de entorno de la forma que vea más útil.
 
-1. Inicialización del Proyecto: Comienza ejecutando `scarb new` con el nombre del proyecto `scarb new workshop` para crear un nuevo proyecto. Este comando generará automáticamente la estructura básica del proyecto, incluyendo un archivo de configuración `Scarb.toml` y un archivo inicial `src/lib.cairo`.
+---
 
-2. Desarrollo del Contrato: Escribe tu código Cairo y guárdalo en el directorio src, en este caso usaremos como base varios contratos desde un `Hola.cairo`, un `Owner.cairo` y el contrato `WorkshopMensajesL2.cairo`.
+## Integrando Scarb en tu Flujo de Desarrollo
+Estos pasos te guiarán a través de un flujo de trabajo típico para desarrollar un contrato Starknet utilizando Scarb. Si has clonado este repositorio y quieres seguir solo los procesos, puedes ir directamente al paso 5.
 
-3. El archivo `lib.cairo` lo dejaremos para añadir los `mod Hola`, `mod Owner` y `mod WorkshopMensajesL2` que indicaran que contratos de Cairo utilizar.
+1. **Inicialización del Proyecto:** Comienza ejecutando `scarb new workshop` para crear un nuevo proyecto con el nombre "workshop". Este comando generará automáticamente la estructura básica del proyecto, incluyendo un archivo de configuración `Scarb.toml` y un archivo inicial `src/lib.cairo`.
 
-4. Gestión de Dependencias: Si tu contrato depende de bibliotecas externas, utiliza `scarb add` para incluir fácilmente estas dependencias en tu proyecto.
+2. **Desarrollo del Contrato:** Escribe tu código Cairo y guárdalo en el directorio `src`. En este caso, utilizaremos como base varios contratos: `Hola.cairo`, `Owner.cairo` y el contrato `WorkshopMensajesL2.cairo`.
 
-5. Compilación del Contrato: Ejecuta `scarb build` para compilar tu contrato en código Sierra. Este código resultante puede luego ser examinado con más detalle o utilizado como entrada para otras herramientas o procesos.
+3. **Optimización de Módulos:** Utilizaremos el archivo `lib.cairo` para añadir los módulos `mod Hola`, `mod Owner` y `mod WorkshopMensajesL2`, que indicarán qué contratos de Cairo se utilizarán.
 
-Al integrar Scarb en tu flujo de trabajo, aprovechas sus características para hacer tu proceso de desarrollo más eficiente y manejable.
+4. **Gestión de Dependencias:** Si tu contrato depende de bibliotecas externas, usa `scarb add` para incluir fácilmente estas dependencias en tu proyecto, incluso de una versión específica. Además, puedes utilizar `scarb rm` para eliminarlas. Por ejemplo:
 
+    ```bash
+    scarb add alexandria_math --git https://github.com/keep-starknet-strange/alexandria.git --rev 27fbf5b
+    ```
+
+    Eliminar:
+
+    ```bash
+    scarb rm alexandria_math
+    ```
+
+5. **Compilación del Contrato:** Ejecuta `scarb build` para compilar tu contrato en código Sierra. Este código resultante puede ser examinado con más detalle o utilizado como entrada para otras herramientas o procesos.
+
+Integrar Scarb en tu flujo de trabajo te permite aprovechar sus características para hacer tu proceso de desarrollo más eficiente y manejable.
+
+---
 
 ### Gestión de Dependencias
 Una vez hayas copiado los pasos anteriores de este taller, deberás guardar todos los cambios en tu editor de código y proceder a modificar tu archivo `Scarb.toml`. En la sección `[dependencies]`, podrás añadir dependencias externas como por ejemplo las de OpenZeppelin u otras que necesites. Además, asegúrate de que en la sección `[[target.starknet-contract]]` de tu archivo `Scarb.toml` especifiques `sierra = true` para que la compilación genere el código en la representación intermedia de Sierra en formato `.json`.
@@ -459,7 +488,7 @@ Si todo ha ido bien, se debería crear una carpeta `dev/target` que contendrá l
 
 ---
 
-## Declare del Contrato con Starkli
+## Variables de Entorno
 Una vez tengamos todo preparado realizaremos la declaración del `Hola.cairo`, está declaración nos servirá para establecer una estrucutra que nos sirva para usar en el futuro y si queremos volver a usar este contrato, solo usar su mismo `Class Hash` que nos ha dado, y pasar los argumentos del construcutor que queremos, asi podrimaos tener un `Class hash` por ejemplo de un `ERC-20` standard o con ciertas propiedades, pero cada uno con su owner, nombre, simbolo, total supply o diferentes lógicas que sean  programadas.
 
 Siempre es importante verificar que los `EXPORT` se hayan realizado correctamente para interactuar con la red de Starknet, podemos definir 3 maneras útiles para manejar nuestras variables de entorno necesarias.
@@ -469,217 +498,16 @@ Siempre es importante verificar que los `EXPORT` se hayan realizado correctament
 Deberemos definir cada vez que habramos la terminal el `keystore` o firmante que tengamos añadido, el `account` o contrato de cuenta que vamos a utilizar y el `rpc` que podremos definir uno propio y manejar los diferentes puntos de conexión a las redes `mainnet`, `goerli`, o `sepolia`.
 
 ```bash
-export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Workshop.json
-export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Workshop.json
-export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_WorkshopL2.json
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_WorkshopL2.json
+export STARKNET_RPC="https://starknet-testnet.public.blastapi.io"
 ```
 
-2. Archivo bash:
-
-La otra opción es crear un archivo envars que gestione nuestros `keystore`, `account` y `rpc`, lo ideal sería en la raíz de donde hemos creado nuestras cuentas de `OZ` la de `Braavos` o la de `Katana` crear un envars.sh, en este caso utilizaremos [`envarsWorkshop.sh`](/Workshop-Mensajes-Ethereum-Starknet/l2/envars/envarsWorkshop.sh) aunque dejaremos al final la configuración de todas ellas, podrá encontrarlas en el repo [aquí](/Workshop-Mensajes-Ethereum-Starknet/l2/envars/). 
-
-Deberemos crear primero el archivo:
+Ejemplos que puede usar para cada una de sus cuentas `Workshop con OZ`, `Katana` o `Braavos`, en este caso indicamos un `API KEY` propioi creado en [Infura](https://www.infura.io/), pero recuerde revisar todas las posibilidades en [Sección de RPC](https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet#rpc)
 
 ```bash
-touch ~/.starkli-wallets/deployer/envarsWorkshop.sh
-```
-
-Ahora podremos editarlo y añadir nuestras variables:
-
-```bash
-#!/bin/bash
-export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Workshop.json
-export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Workshop.json
-export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
-```
-
-Todo listo para activar nuestras variables, sólo tendremos que ejecutar el comando llamando al archivo con la configuración que queramos usar:
-
-```bash
-source ~/.starkli-wallets/deployer/envarsWorkshop.sh
-```
-
-3. Env:
-
-También hemos dejado unos [`.env.example`](/Workshop-Mensajes-Ethereum-Starknet/l2/.env.example) que definiran `.env` si quiere utilizar este método, recordamos que los `.env` no son subidos a github y permaneceran seguros en ese archivo.
-
-Deberemos crear primero nuestro archivo `.env` escogiendo el example deseado, en este caso seguiremos con example con la configuración del account de `Workshop`, para ello ejecutaremos el siguiente comando:
-
-```bash
-cp .env.example .env
-source .env
-```
-
-
-### Declarar Contract:
-Si nos encontramos en la carptea raiz de nuestro proyecto tenemos dos opciones, o ir directamente a nuestra carpeta `dev` y ejecutar el `declare` con `starkli`:
-
-```bash
-starkli declare workshop_l2_hola.contract_class.json
-```
-
-O directamente indicando donde se encuentra nuestro archivo.
-
-```bash
-starkli declare ./target/dev/workshop_l2_hola.contract_class.json
-```
-
-Si recibe algun error revise si es por falta de encontrar el archivo, por lo que está indicando mal la ruta, nombre o al abrir una terminal nueva se olvido de hacer exportar las variables de entorno necesarias, o puso su contraseña mal....
-
-El resultado que debería de obtener son los datos de Network utilizada, Versión del Compile, hash de la tranasación y la compilación a Sierra desde Casm la que nos generará un `Class hash` que deberemos guardar para ahora nuesto despliege, también podrá salir que su `class` ya ha sido declarada.
-
-![Alt text](assets/image-12.png)
-
-En este ejemplo usaremos `Class hash declared:0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c` que como vemos ya ha sido declarado.
-
----
-
-### Despliegue del Contrato con Starkli
-Ahora que hemos declarado nuestro contrato, si no se había hecho anteriormente y es único, podemos omitir la declaración y proceder directamente al despliegue. Para ello, debemos asegurarnos de revisar los argumentos que se pasan al constructor del contrato. En primer lugar, debemos proporcionar el `Class hash` del contrato que queremos desplegar, en este caso será `0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c`. Además, en el constructor (en caso de que lo haya) debemos revisar los argumentos que necesitamos para desplegar nuestro contrato, en este caso sólo necesitamos un `Nombre` que queramos guardar en nuestro `storage` del contrato para el `Hola.cairo` pero debemos revisar cada constructor para el resto de contratos de `Owner.cairo` y `WorkshopMensajesL2.cairo` 
-
-Aquí revisamos este caso concreto que necesita el constructor:
-
-```rust
-    #[constructor]
-    fn constructor(ref self: ContractState, name: felt252) {
-        self.name.write(name);
-    }
-```
-
-Para pasar nuestro nombre que queramos guardar a `felt` o a `hexa` podemos utilizar el comando de Starkli y añadir el string, en este caso pondremos `Nadai`: 
-
-```bash
-starkli to-cairo-string Nadai
-```
-
-![Alt text](assets/image-10.png)
-
-Y vemos que la salida convertida que deberemos pasar es `0x4e61646169`. También podemos utilizar la herramienta [Stark.utils](https://stark-utils.vercel.app/converter) para hacer la conversión. Por lo tanto, ejecutamos el siguiente comandos y añadimos los argumentos requeridos:
-
-
-```bash
-starkli deploy 0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c 0x4e61646169
-```
-
-![Alt text](assets/image-11.png)
-
-Puedes consultar el [enlace del contrato del "Hola"](https://testnet.starkscan.co/contract/0x02edd5e8f285ef73e78fcdb46e667e2d3a47b960e0575c1b6c2a5b4d91c6b0f3#read-write-contract) para asegurarte de que todo esté correcto y que se guardado el nombre de `Nadai` para ello podemos revisar la función de read `obtener_nombre`, que deberá dar la data recién guardada.
-
-![Alt text](assets/image-13.png)
-
-Además, con Starkli, puedes realizar llamadas directas al contrato para verificar que todo esté en orden indicando `call` seguido del `contract` y el nombre del `selector`, en este caso el selectro que vamos a llamar es `obtener_nombre`:
-
-```bash
-starkli call 0x02edd5e8f285ef73e78fcdb46e667e2d3a47b960e0575c1b6c2a5b4d91c6b0f3 obtener_nombre
-```
-
-![Alt text](assets/image-14.png)
-
-Podemos convertir este valor de nuevo a un string que deberá dar el nombre de `Nadai`, utilizando [Stark.utils](https://stark-utils.vercel.app/converter) o con Starkli y el comando:
-
-```bash
-starkli parse-cairo-string 0x0000000000000000000000000000000000000000000000000000004e61646169
-```
-
-![Alt text](assets/image-15.png)
-
-Ahora para finalizar haremos un `invoke`, el cual modificará el estado del contrato y por lo tanto de la red, para ello escogemos un nuevo `Name`, usaremos `L2enEspanol` para convertirlo, usando el comando anterior:
-
-```bash
-starkli to-cairo-string L2enEspanol
-```
-
-![Alt text](assets/image-16.png)
-
-Ahora pasaremos el valor `0x4c32656e457370616e6f6c` como argumento con el comando de Starkli `invoke` en el cual deberemos indicar el `contract`, el nombre del `selector`, en este caso el selector que vamos a llamar es `escoger_nombre` seguido del nuevo nombre:
-
-```bash 
-starkli invoke 0x02edd5e8f285ef73e78fcdb46e667e2d3a47b960e0575c1b6c2a5b4d91c6b0f3 escoger_nombre 0x4c32656e457370616e6f6c
-```
-
-![Alt text](assets/image-17.png)
-
-Y podemos comprobar con el comando anterior para `obtener_nombre` que el estado del contrato ha sido cambiado correctamente:
-
-```bash
-starkli call 0x02edd5e8f285ef73e78fcdb46e667e2d3a47b960e0575c1b6c2a5b4d91c6b0f3 obtener_nombre
-```
-
-![Alt text](assets/image-18.png)
-
-También podemos revisar en los explorer que todo ha sido actualizado y la invoación a la función `escoger_nombre` está funcionando correctamente.
-
-![Alt text](assets/image-19.png)
-
-![Alt text](assets/image-20.png)
-
-
-## Katana
-
-
-
-
-
-
-----
-
-
-## Workshop de Mensajes L2<->L1
-
-Este contrato será el encargado de recibir mensajes en `l2` provenientes de `l1` y poder manejar estos datos si han sido indicados con el `selector` correspondiente y otros valores que veremos posterior, pero es esencial indicar al sistema para que pueda manejar estas funciones de mensajes que esten  indicando en el contrato con `#[l1_handler]`, en este caso nuestro contrato de `WorkshopMensajesL2.cairo` también puede realizar envios de mensajes desde `l2` hacia `l1` para que puedan ser consumidos.
-
-
------------------------------------------------------
------------------------------------------------------
------------------------------------------------------
-
-```bash
-mkdir -p ~/.starkli-wallets/deployer
-```
-
-## PK de OZ o desde 0
-
-```bash
-starkli signer keystore new ~/.starkli-wallets/deployer/Signer_Workshop.json
-```
-
-```bash
-export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Workshop.json
-```
-
-
-```bash
-starkli account oz init ~/.starkli-wallets/deployer/Account_Workshop.json
-```
-
-
-## PK Braavos o Argent
-
-```bash
-starkli signer keystore from-key ~/.starkli-wallets/deployer/Signer_Braavos.json
-```
-
-```bash
-starkli account fetch 0x027f68d0d0f474b1a25f359a42dc49a3003a3522d71765a5e7658e68520d7826 --output ~/.starkli-wallets/deployer/Account_Braavos.json
-```
-
-
-## PK Katana
-
-```bash
-starkli signer keystore from-key ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
-```
-
-```bash
-starkli account fetch 0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973 --rpc http://0.0.0.0:5050 --output ~/.starkli-wallets/deployer/AccountKatana_Workshop.json
-```
-
-
-# Starknet OZ Goerli
-
-```bash
-export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Workshop.json
-export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Workshop.json
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_WorkshopL2.json
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_WorkshopL2.json
 export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
 ```
 
@@ -698,89 +526,32 @@ export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/AccountKatana_Workshop.json
 export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/SignerKatana_Workshop.json
 ```
 
+2. Archivo bash:
 
+La otra opción es crear un archivo envars que gestione nuestros `keystore`, `account` y `rpc`, lo ideal sería en la raíz de donde hemos creado nuestras cuentas de `OZ` la de `Braavos` o la de `Katana` crear un envars.sh, en este caso utilizaremos [`envarsWorkshop.sh`](/Workshop-Mensajes-Ethereum-Starknet/l2/envars/envarsWorkshop.sh) aunque dejaremos al final la configuración de todas ellas, podrá encontrarlas en el repo [aquí](/Workshop-Mensajes-Ethereum-Starknet/l2/envars/). 
 
-
----
-
-
-
-- [Contract WorkshopMensajeL1](https://goerli.etherscan.io/address/0xb604ba0ff29eb29f33b912b9e3a9659ac385a780)
-
-- [Contract WorkshopMensajeL2](https://goerli.voyager.online/contract/0x034a39d6f4c991787c35a884a004103cf5b57ba4f86bd46866f2502b8634d7c2)
-
-
----
-
-
-## Katana
+Deberemos crear primero el archivo:
 
 ```bash
-starkli signer keystore from-key ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
+touch ~/.starkli-wallets/deployer/envarsWorkshop.sh
 ```
 
-0x1800000000300000180000000000030000000000003006001800006600
+Ahora podremos editarlo y añadir nuestras variables:
 
 ```bash
-starkli account fetch 0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973 --rpc http://0.0.0.0:5050 --output ~/.starkli-wallets/deployer/AccountKatana_Workshop.json
+#!/bin/bash
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_WorkshopL2.json
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_WorkshopL2.json
+export STARKNET_RPC="https://starknet-testnet.public.blastapi.io"
 ```
 
+Todo listo para activar nuestras variables, sólo tendremos que ejecutar el comando llamando al archivo con la configuración que queramos usar:
 
 ```bash
-export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/AccountKatana_Workshop.json
-export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/SignerKatana_Workshop.json
+source ~/.starkli-wallets/deployer/envarsWorkshopL2.sh
 ```
 
-
-```bash
-starkli declare --watch target/dev/workshop_l2_WorkshopMensajesL2.contract_class.json --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
-```
-
-
-```bash
-starkli deploy 0x001f096a80def43ef5e71513053dc8e187c5eed93f2f5ead4b722cb5b3e69782 --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
-```
-
-# Owner Katana
-
-```bash
-starkli declare target/dev/workshop_l2_Ownable.contract_class.json --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
-```
-
-```bash
-starkli deploy 0x0539a4c86c5f2a93977c227d2ff7777ec895418961b824b5cb1ad3eadce9b0e3 0x517ececd29116499f4a1b64b094da79ba08dfd54a3edaa316134c41f8160973 --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
-```
-
-```bash
-starkli call 0x01fc20faa1f75022c1640f6f89b894bd5022d6aa88d3656a3fb1b222b6101836 get_owner --rpc http://0.0.0.0:5050
-```
-
-```bash
-starkli invoke 0x01fc20faa1f75022c1640f6f89b894bd5022d6aa88d3656a3fb1b222b6101836 transfer_ownership 0x2b191c2f3ecf685a91af7cf72a43e7b90e2e41220175de5c4f7498981b10053 --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
-```
-
-----
-
-## Comandos 
-
-starkli to-cairo-string Nadai
-
-starkli parse-cairo-string 0x4e61646169
-
-Nadai2 = 0x4e6164616932
-
-starkli call 0x022b4a07962546207fdde7c0bbaf0c6183274d4a1b8c318f91b485b566975916 obtener_nombre
-
-starkli class-hash target/dev/workshop_l2_hola.contract_class.json
-
-starkli class-hash-at 
-
-## Variables de entorno env
-
-cp .env.example .env
-source .env
-
-## Variables de entorno sh
+Ejemplos que puede usar para cada una de sus cuentas `Workshop con OZ`, `Katana` o `Braavos`
 
 ```bash
 touch ~/.starkli-wallets/deployer/envarsKatana.sh
@@ -821,9 +592,393 @@ source ~/.starkli-wallets/deployer/envarsBraavos.sh
 source ~/.starkli-wallets/deployer/envarsWorkshop.sh
 ```
 
------------------------------------------------------------------
------------------------------------------------------------------
------------------------------------------------------------------
+3. Env:
+
+También hemos dejado unos [`.env.example`](/Workshop-Mensajes-Ethereum-Starknet/l2/.env.example) que definiran `.env` si quiere utilizar este método, recordamos que los `.env` no son subidos a github y permaneceran seguros en ese archivo.
+
+Deberemos crear primero nuestro archivo `.env` escogiendo el example deseado, en este caso seguiremos con example con la configuración del account de `Workshop`, para ello ejecutaremos el siguiente comando:
+
+```bash
+cp .env.example .env
+source .env
+```
+
+---
+
+### Declarar Contrato con Starkli:
+Si nos encontramos en la carpeta raíz de nuestro proyecto, tenemos dos opciones: ir directamente a nuestra carpeta `dev` y ejecutar `declare` con `starkli`:
+
+```bash
+starkli declare workshop_l2_hola.contract_class.json
+```
+
+O indicar directamente la ubicación de nuestro archivo:
+
+```bash
+starkli declare ./target/dev/workshop_l2_hola.contract_class.json
+```
+
+Si recibes algún error, revisa si se debe a la falta de encontrar el archivo, lo que indicaría un error en la ruta o el nombre. También verifica si al abrir una nueva terminal olvidaste exportar las variables de entorno necesarias o ingresaste incorrectamente tu contraseña.
+
+El resultado esperado incluye datos como la red utilizada, la versión de compilación, el hash de la transacción y la compilación a Sierra desde Casm. Esto generará un `Class hash` que debemos guardar para nuestro despliegue. También puede indicar que tu `class` ya ha sido declarada.
+
+![Alt text](assets/image-12.png)
+
+En este ejemplo, usaremos `Class hash declared: 0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c`, el cual ya ha sido declarado.
+
+---
+
+### Despliegue del Contrato Hola con Starkli
+Ahora que hemos declarado nuestro contrato, si no se había hecho anteriormente y es único, podemos omitir la declaración y proceder directamente al despliegue. Para ello, debemos asegurarnos de revisar los argumentos que se pasan al constructor del contrato. En primer lugar, debemos proporcionar el `Class hash` del contrato que queremos desplegar, en este caso será `0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c`. 
+
+Además, en el constructor (en caso de que lo haya) debemos revisar los argumentos que necesitamos para desplegar nuestro contrato, en este caso sólo necesitamos un `Nombre` que queramos guardar en nuestro `storage` del contrato para el `Hola.cairo` pero debemos revisar cada constructor para el resto de contratos de `Owner.cairo` y `WorkshopMensajesL2.cairo` 
+
+Aquí revisamos este caso concreto que necesita el constructor:
+
+```rust
+    #[constructor]
+    fn constructor(ref self: ContractState, name: felt252) {
+        self.name.write(name);
+    }
+```
+
+Para pasar nuestro nombre que queramos guardar a `felt` o a `hexa` podemos utilizar el comando de Starkli y añadir el string, en este caso pondremos `Nadai`: 
+
+```bash
+starkli to-cairo-string Nadai
+```
+
+![Alt text](assets/image-10.png)
+
+Y vemos que la salida convertida que deberemos pasar es `0x4e61646169`. También podemos utilizar la herramienta [Stark.utils](https://stark-utils.vercel.app/converter) para hacer la conversión. Por lo tanto, ejecutamos el siguiente comandos y añadimos los argumentos requeridos:
+
+
+```bash
+starkli deploy 0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c 0x4e61646169
+```
+
+![Alt text](assets/image-11.png)
+
+Puedes consultar el [enlace del contrato del "Hola"](https://testnet.starkscan.co/contract/0x012db11f112b48ce84c7943b7c62777abc776773eafcc60f394103b5b450adb8#read-write-contract) para asegurarte de que todo esté correcto y que se guardado el nombre de `Nadai` para ello podemos revisar la función de read `obtener_nombre`, que deberá dar la data recién guardada.
+
+![Alt text](assets/image-13.png)
+
+Además, con Starkli, puedes realizar llamadas directas al contrato para verificar que todo esté en orden indicando `call` seguido del `contract` y el nombre del `selector`, en este caso el selectro que vamos a llamar es `obtener_nombre`:
+
+```bash
+starkli call 0x012db11f112b48ce84c7943b7c62777abc776773eafcc60f394103b5b450adb8 obtener_nombre
+```
+
+![Alt text](assets/image-14.png)
+
+Podemos convertir este valor de nuevo a un string que deberá dar el nombre de `Nadai`, utilizando [Stark.utils](https://stark-utils.vercel.app/converter) o con Starkli y el comando:
+
+```bash
+starkli parse-cairo-string 0x0000000000000000000000000000000000000000000000000000004e61646169
+```
+
+![Alt text](assets/image-15.png)
+
+Ahora para finalizar haremos un `invoke`, el cual modificará el estado del contrato y por lo tanto de la red, para ello escogemos un nuevo `Name`, usaremos `L2enEspanol` para convertirlo, usando el comando anterior:
+
+```bash
+starkli to-cairo-string L2enEspanol
+```
+
+![Alt text](assets/image-16.png)
+
+Ahora pasaremos el valor `0x4c32656e457370616e6f6c` como argumento con el comando de Starkli `invoke` en el cual deberemos indicar el `contract`, el nombre del `selector`, en este caso el selector que vamos a llamar es `escoger_nombre` seguido del nuevo nombre:
+
+```bash 
+starkli invoke 0x012db11f112b48ce84c7943b7c62777abc776773eafcc60f394103b5b450adb8 escoger_nombre 0x4c32656e457370616e6f6c
+```
+
+![Alt text](assets/image-17.png)
+
+Y podemos comprobar con el comando anterior para `obtener_nombre` que el estado del contrato ha sido cambiado correctamente:
+
+```bash
+starkli call 0x02edd5e8f285ef73e78fcdb46e667e2d3a47b960e0575c1b6c2a5b4d91c6b0f3 obtener_nombre
+```
+
+![Alt text](assets/image-18.png)
+
+También podemos revisar en los explorer que todo ha sido actualizado y la invoación a la función `escoger_nombre` está funcionando correctamente.
+
+![Alt text](assets/image-19.png)
+
+![Alt text](assets/image-20.png)
+
+
+---
+
+### Katana:
+Ahora con Katana, configuraremos un Owner. Podríamos usar un keystore similar al de las otras cuentas. Primero, accederemos a `katana`. Tenemos la opción de levantar este nodo local para interactuar con él. Recomendamos ejecutarlo con la opción `--disable-fee` para evitar problemas de costos de gas por transacción. En este ejemplo, configuraremos `katana` para lanzar solo `3 cuentas`, en lugar de las `10 cuentas` predeterminadas. Luego, dividiremos la terminal en dos para continuar.
+
+```bash
+katana --disable-fee --accounts 3
+```
+
+![Alt text](assets/image-79.png)
+
+Una vez levantado Katana, configuramos nuestra cuenta de Katana como un signer y establecemos las cuentas que han sido pre-desplegadas para usarlas en este entorno. También creamos nuestro descriptor de cuenta:
+
+```bash
+starkli signer keystore from-key ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
+```
+
+![Alt text](assets/image-80.png)
+
+Luego, utilizamos las variables de diferentes maneras, ya sea mediante `env`, un archivo `envars`, o bien configurándolas manualmente:
+
+```bash
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/AccountKatana_Workshop.json
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/SignerKatana_Workshop.json
+```
+
+---
+
+### Declaración y despliegue de Owner.cairo
+Pasamos a declarar y desplegar nuestro contrato [Owner.cairo](/Workshop-Mensajes-Ethereum-Starknet/l2/src/Owner.cairo). Después de haber ejecutado `scarb build`, estamos listos para el `declare` y `deploy`, debiendo indicar el `rpc de katana`:
+
+```bash
+starkli declare target/dev/workshop_l2_Ownable.contract_class.json --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
+```
+
+![Alt text](assets/image-81.png)
+
+Luego, indicamos el `Class hash` del contrato a desplegar y los argumentos requeridos por `Owner.cairo`. Por ejemplo, una dirección de quien será el propietario, como una de las cuentas de Katana que no haya sido utilizada.
+
+```bash
+starkli deploy 0x0539a4c86c5f2a93977c227d2ff7777ec895418961b824b5cb1ad3eadce9b0e3 0x5686a647a9cdd63ade617e0baf3b364856b813b508f03903eb58a7e622d5855 --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana_Workshop.json
+```
+
+![Alt text](assets/image-82.png)
+
+---
+
+### Interacción con contratos en Katana
+Usamos `Starkli` para realizar `call` y `invoke`, añadiendo el `rpc` y las variables adecuadas. Por ejemplo, para verificar `get_owner`:
+
+```bash
+starkli call 0x04bcc6a7571624b8f082507512dbb91e3b380eb138067ff5bf103a72faeaae42 get_owner --rpc http://0.0.0.0:5050
+```
+
+![Alt text](assets/image-83.png)
+
+Para realizar un `transfer_ownership`, solo necesitamos la dirección del contrato y el nuevo propietario. Antes de ejecutar este comando, es necesario configurar la segunda cuenta que acabamos de hacer propietaria para poder realizar el `invoke` con esa cuenta.
+
+1. **Crear Signer Cuenta 3:**
+    ```bash
+    starkli signer keystore from-key ~/.starkli-wallets/deployer/SignerKatana3_Workshop.json
+    ```
+
+2. **Crear Descriptor y Cuenta 3:**
+    ```bash
+    starkli account fetch 0x5686a647a9cdd63ade617e0baf3b364856b813b508f03903eb58a7e622d5855 --rpc http://0.0.0.0:5050 --output ~/.starkli-wallets/deployer/AccountKatana3_Workshop.json
+    ```
+    
+Una vez configurada, hacemos el `invoke` hacia la tercera cuenta de Katana, por ejemplo:
+
+```bash
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/AccountKatana3_Workshop.json
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/SignerKatana3_Workshop.json
+```
+
+```bash
+starkli invoke 0x04bcc6a7571624b8f082507512dbb91e3b380eb138067ff5bf103a72faeaae42 transfer_ownership 0x765149d6bc63271df7b0316537888b81aa021523f9516a05306f10fd36914da --rpc http://0.0.0.0:5050 --account ~/.starkli-wallets/deployer/AccountKatana3_Workshop.json --keystore ~/.starkli-wallets/deployer/SignerKatana3_Workshop.json
+```
+
+![Alt text](assets/image-84.png)
+
+Para verificar que todo ha salido bien, puedes revisar que Katana haya minado tres bloques o transacciones. Además, puedes volver a ejecutar una llamada al contrato usando `starkli call` para confirmar que el `owner` ha cambiado correctamente hacia la nueva cuenta de Katana 3:
+
+```bash
+starkli call 0x04bcc6a7571624b8f082507512dbb91e3b380eb138067ff5bf103a72faeaae42 get_owner --rpc http://0.0.0.0:5050
+```
+
+![Alt text](assets/image-85.png)
+
+----
+
+
+## Workshop de Mensajes L2<->L1
+Este contrato se encarga de recibir mensajes en `L2` provenientes de `L1` y manejar estos datos utilizando el `selector` correspondiente y otros valores que veremos posteriormente. Es esencial indicar al sistema que manejará estas funciones de mensajes con `#[l1_handler]`. Nuestro contrato [`WorkshopMensajesL2.cairo`](/Workshop-Mensajes-Ethereum-Starknet/l2/src/WorkshopMensajesL2.cairo) también puede enviar mensajes desde `L2` hacia `L1` para ser consumidos.
+
+Para comenzar, desplegaremos nuestros contratos [WorkshopMensajesL1.sol](/Workshop-Mensajes-Ethereum-Starknet/l1/src/WorkshopMensajesL1.sol) y [WorkshopMensajesL2.cairo](/Workshop-Mensajes-Ethereum-Starknet/l2/src/WorkshopMensajesL2.cairo). Usaremos [Remix](https://remix.ethereum.org) para desplegar nuestros contratos en Ethereum y en Cairo de manera sencilla.
+
+---
+
+### Remix: Compilando y Desplegando
+Comencemos creando un nuevo Workspace en blanco y asignando el nombre deseado, por ejemplo, `Workshop L2 en Español`.
+
+![Alt text](assets/image-42.png)
+
+![Alt text](assets/image-43.png)
+
+![Alt text](assets/image-44.png)
+
+Ahora subiremos la carpeta que hemos clonado del Workshop, la cual contendrá la carpeta `l1` para desplegar nuestro contrato de Solidity en Ethereum y nuestros contratos en Cairo para Starknet.
+
+![Alt text](assets/image-45.png)
+
+![Alt text](assets/image-46.png)
+
+![Alt text](assets/image-47.png)
+
+Luego, procederemos a compilar el proyecto. Deberemos asegurarnos de seleccionar `WorkshopMensajesL1`, compilar y dirigirnos a la sección de despliegue. Aquí deberemos indicar la conexión que utilizaremos; en este caso, `Injected Provider - Metamask` para utilizar una cuenta de Goerli con fondos de faucet. 
+
+![Alt text](assets/image-48.png)
+
+![Alt text](assets/image-49.png)
+
+![Alt text](assets/image-50.png)
+
+![Alt text](assets/image-51.png)
+
+Tendremos que indicar los valores que necesita el constructor para desplegar. En este caso, la dirección del Contrato del Starknet Core desplegado en Goerli, que controla y es responsable de todas las syscall. La dirección en Goerli de Ethereum es `0xde29d060D45901Fb19ED6C6e959EB22d8626708e`.
+
+![Alt text](assets/image-52.png)
+
+![Alt text](assets/image-53.png)
+
+Una vez confirmada la transacción, nuestro contrato estará desplegado. Para interactuar con él desde el Explorador, deberemos verificar este contrato. Podemos bajarnos el plugin de `Contract verification - Etherscan`, pero primero necesitaremos crearnos una `API KEY` para poder verificarlo correctamente.
+
+**También pueden usar el contrato desplegado [aquí](https://goerli.etherscan.io/address/0xf2dcf405fe5ce4000f1637e9b65ac6f7416e43a0) si no consiguen Verificarlo.**
+
+Para verificar con la API KEY, primero tendremos que crear una desde [Etherscan](https://etherscan.io/). Crea una cuenta, inicia sesión y accede a la pestaña de tu perfil y `Api Key`.
+
+![Alt text](assets/image-54.png)
+
+![Alt text](assets/image-55.png)
+
+![Alt text](assets/image-56.png)
+
+Simplemente presiona `Add` y crea una nueva con el nombre que desees, luego copia tu Api Key Token para pegarlo en Remix y poder verificar tu Contrato.
+
+![Alt text](assets/image-57.png)
+
+![Alt text](assets/image-58.png)
+
+![Alt text](assets/image-59.png)
+
+A veces, la verificación básica puede causar problemas. Para prevenirlo, prueba en Remix antes de verificar crear un `flatten` del contrato `WorkshopMensajeL1.sol`.
+
+![Alt text](assets/image-63.png)
+
+![Alt text](assets/image-60.png)
+
+Podrás verificar que tu contrato no esté verificado previamente y que no puedas modificarlo ni acceder a sus funciones desde el explorador. Una vez ingreses al plugin de Verificación, en el ícono `Home`, se te pedirá tu `Api Key Token`. Después de agregarlo, selecciona los argumentos del constructor `0xde29d060D45901Fb19ED6C6e959EB22d8626708e` y la dirección del Contrato desplegado, en nuestro caso `0xF2dcF405fE5cE4000F1637e9B65aC6F7416e43A0`.
+
+![Alt text](assets/image-61.png)
+
+![Alt text](assets/image-62.png)
+
+---
+
+### Desplegando e Interactuando con WorkshopMensajesL2.cairo
+
+A pesar de que podríamos seguir utilizando Remix para desplegar Workshop Mensajes L2, nos enfocaremos en la CLI para practicar. Utilizaremos la cuenta de Braavos para llevar a cabo este proceso.
+
+Primero, configuramos las variables. Aunque dejaremos las variables aquí para configurarlas manualmente, recuerda que existen diversos métodos para gestionarlas.
+
+```bash
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Braavos.json
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Braavos.json
+export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
+```
+
+Dentro de la carpeta `l2`, ejecutamos `scarb build`. En el comando `declare`, indicamos el contrato `WorkshopMensajesL2` en formato `.json` en Sierra.
+
+```bash
+starkli declare ./target/dev/workshop_l2_WorkshopMensajesL2.contract_class.json
+```
+
+![Alt text](assets/image-67.png)
+
+Si no hemos realizado cambios, veremos la notificación de que el contrato ya ha sido declarado. Procedemos al deploy, sin necesidad de argumentos del constructor.
+
+```bash
+starkli deploy 0x03ac40c1e3bde07fe4fb81623fdbb72fd1c34a6bcb492712c38997f1adcadea5
+```
+
+![Alt text](assets/image-68.png)
+
+El contrato de Mensajería de L2 en Cairo está listo para ser utilizado.
+
+* [Contrato Mensajes L1](https://goerli.etherscan.io/tx/0x7bc724e0f30cb79a5f75a29a065822f029cf13a36458f136d3bf4ee1ee81c106)
+* [Contrato Mensajes L2](https://testnet.starkscan.co/search/0x0771b629cb3ff29a7af8369a18e02050b2cccd53bcd4594c9d96718dc3edd9ef)
+
+Ahora procederemos a enviar nuestros mensajes entre L1<->L2. Es esencial comprender el manejo de mensajes y sus estados:
+
+#### **De L1 a L2:**
+1. **Enviado a L2:** El mensaje es enviado desde L1->L2, donde es recibido y registrado en la red de L2 para su procesamiento posterior.
+2. **Consumido en L2:** Una vez recibido en L2, el mensaje es procesado y utilizado por los contratos o la lógica implementada en Starknet.
+3. **Finalizado en L1:** Después de haber sido consumido y procesado en Starknet, se informa a la capa 1 sobre la finalización del mensaje, actualizando su estado para reflejar que la acción se ha completado.
+
+#### **De L2 a L1:**
+1. **Enviado a L1:** El mensaje es enviado desde L2->L1, listo para ser recibido y procesado por la red de L1.
+2. **Adjuntado a L1:** Una vez que el mensaje llega L1, se adjunta a la red para su procesamiento posterior. En este estado, el mensaje está disponible pero aún no ha sido consumido.
+3. **Consumido en L1:** Finalmente, el mensaje podrá ser consumido por L1 y su contenido es utilizado según lo previsto en la lógica implementada en esa capa.
+
+Estos estados reflejan cómo los mensajes atraviesan diferentes capas (L1 y L2) y cómo se procesan y utilizan en cada una de ellas hasta su estado finalizado o consumido.
+
+Para enviar mensajes, es necesario tener `#[l1_handler]` indicado para realizar una `syscall` y el selector de la función deseada, como `recibir_mensaje_valor_l1`. Además, el valor enviado desde L1 debe cumplir con condiciones específicas, como la carga útil añadida en `assert(value == 123)`, y especificar `from_address` del contrato de L1 que envía el mensaje (WorkshopMensajesL1).
+
+    ```bash
+    #[l1_handler]
+    fn recibir_mensaje_valor_l1(ref self: ContractState, from_address: felt252, value: felt252) {
+        // assert(from_address == ...);
+        // Valor fijo para ser válido == 123
+
+        assert(value == 123, 'Valor inválido');
+    }
+    ```
+
+Podríamos calcular el selector directamente con un keccak256, pero es más sencillo usar [Stark Utils](https://stark-utils.vercel.app/converter), donde obtendremos el selector en felt. En este caso, usaremos `488620836784764677921038031667344270694842985450521428815152577605510277981`.
+
+![Alt text](assets/image-69.png)
+
+Este será el valor del selector que utilizaremos al enviar el mensaje de L1->L2 si queremos utilizar esa función específica. Para ello, debemos ir al contrato desplegado en L1 e indicar los valores correspondientes para [enviar_Mensaje_Starknet](https://goerli.etherscan.io/address/0xf2dcf405fe5ce4000f1637e9b65ac6f7416e43a0#writeContract#F4):
+
+* PayableAmount: Cantidad de ETH a enviar para pagar, que puede ser 0.000001
+* ContractAddress: Dirección del Contrato de L2 que recibirá el mensaje (WorkshopMensajeL2.cairo)
+* Selector: Función interna en el Contrato de L2 indicada con L1 Handler que queremos utilizar
+* Payload: Valor que queremos pasar
+
+![Alt text](assets/image-70.png)
+
+![Alt text](assets/image-71.png)
+
+* [Transacción de L1 a L2](https://goerli.etherscan.io/tx/0xef828cf44cba2d7420ef383da3a7ec078de4f57d6922204881da14638fc0b908)
+
+Observamos que el mensaje llega casi instantáneamente de L1 a L2 con el estado `Enviado a L2`.
+
+![Alt text](assets/image-72.png)
+
+![Alt text](assets/image-73.png)
+
+Si todo ha salido bien, no deberás realizar ningún paso adicional. Verificarás que, a medida que avancen los estados de pendiente en L1 o cuando se actualice el estado final en L1, el mensaje habrá pasado por los tres estados correctamente, siempre que el selector y los demás valores sean correctos. Puedes verificar si tu mensaje ha sido consumido en L2, lo que significa que ha interactuado correctamente con el selector, verificando que los hashes sean iguales.
+
+![Alt text](assets/image-75.png)
+
+![Alt text](assets/image-74.png)
+
+Ahora, para enviar un Mensaje de L2->L1, lo haremos desde nuestro contrato de L2. Deberemos indicar la dirección del contrato con el que interactuaremos en L1, siempre y cuando pueda recibir y enviar mensajes. Una vez el mensaje llegue (puede tardar minutos u horas), podremos consumirlo desde L1.
+
+![Alt text](assets/image-76.png)
+
+* [Envío Mensaje de L2->L1](https://goerli.voyager.online/tx/0x68b5e2d1eef973133bd3f7e1b2c99239aa02c8c4406211e096253009b6703c0)
+
+Ahora observaremos la actualización de mensajes enviados desde L2->L1.
+
+![Alt text](assets/image-77.png)
+
+![Alt text](assets/image-78.png)
+
+Este mensaje no podrá ser consumido hasta que se adjunte a L1. Este paso se realiza manualmente para evitar posibles ataques y garantizar una seguridad de 2FA. Solo nosotros podremos consumir ese mensaje y aceptar lo que conlleva, como un dato de Valor 123.
+
+--- 
 
 ## Gestión de Dependencias Externas en Scarb
 En Scarb, puedes añadir y gestionar las dependencias desde el archivo `Scarb.toml`. Añadir una dependencia es fácil y se puede hacer de varias maneras, una de ellas es utilizando el comando `scarb add`, que admite una variedad de parámetros para expresar tus dependencias. También puede mantener automáticamente la lista de dependencias ordenada, si no lo está. A continuación, se muestra un ejemplo de cómo agregar una dependencia, como alexandria_math:
@@ -840,6 +995,7 @@ scarb rm alexandria_math
 
 Con estas herramientas, puedes gestionar tus dependencias de manera eficiente en Scarb y mantener tu proyecto organizado.
 
+---
 
 ### Call
 Desde Starkli, puedes cambiar el estado de un contrato, realizar operaciones o hacer consultas a datos y estados de la blockchain. Así que comprobemos si nuestro contrato de `Owner.cairo` tiene la dirección del contrato de la cuenta que hemos añadido. Para ello, debemos realizar una `call` e indicar qué función queremos invocar. Lo bueno de Starknet son los selectores, y en este caso, llamaremos a la función `get_owner` del contrato para obtener información sobre quién es el propietario, en este caso sólo es una `call` que no modifica el estado.
@@ -848,9 +1004,8 @@ Desde Starkli, puedes cambiar el estado de un contrato, realizar operaciones o h
 starkli call 0x028491f9e3d8b0005a649e08833330de371b5e227be05a0e0575f247df8691a5 get_owner
 ```
 
-
-
 ---
+
 ### Invoke
 Desde Starkli, tienes la capacidad de llevar a cabo una invocación `invoke`. Esta característica te permite realizar operaciones que tienen el potencial de modificar el estado de un contrato en la blockchain. Para ejecutar un `invoke`, debes proporcionar ciertos parámetros clave, como la `dirección del contrato` que deseas modificar y la función específica que deseas ejecutar en ese contrato, en este ejemplo, `transfer_ownership`. Además, es necesario indicar los argumentos necesarios para la función que estás invocando, como la nueva dirección `0x027f68d0d0f474b1a25f359a42dc49a3003a3522d71765a5e7658e68520d7826`. Esta acción podría resultar en una transferencia de propiedad en el contrato, lo que modificaría su estado interno.
 
@@ -858,14 +1013,7 @@ Desde Starkli, tienes la capacidad de llevar a cabo una invocación `invoke`. Es
 starkli invoke --watch 0x028491f9e3d8b0005a649e08833330de371b5e227be05a0e0575f247df8691a5 transfer_ownership 0x027f68d0d0f474b1a25f359a42dc49a3003a3522d71765a5e7658e68520d7826
 ```
 
-## Guía Mensajes L1<->L2
-
-- Tener Instalado y cuenta en MM
-- Tener Instalado y contrato de ceutna en Braavos o Argent X
-- Tener saldo en Goerli en L1<->L2
-- Remix para L1
-- API Key en etherscan
-
+---
 
 ## RPC
 
@@ -884,9 +1032,82 @@ https://limited-rpc.nethermind.io/goerli-juno
 https://starknet-testnet.public.blastapi.io/rpc/v0.5
 https://rpc.starknet-testnet.lava.build
 
-export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Workshop.json
-export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Workshop.json
-export STARKNET_RPC="https://rpc.starknet-testnet.lava.build"
 
 
 https://docs.starknet.io/documentation/tools/api-services/
+
+## MIN Deploy
+
+1. Clonar el repositorio:
+
+```bash
+git clone git@github.com:Layer2es/Workshop-Mensajes-Ethereum-Starknet.git
+```
+
+2. Instalar Scarb, Starkli y Katana:
+
+```bash
+curl https://get.starkli.sh | sh
+starkliup
+curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh
+curl -L https://install.dojoengine.org | bash
+dojoup
+```
+
+3. Verificar Versiones:
+
+```bash
+starkli --version
+scarb --version
+katana --version
+```
+
+![Alt text](assets/image-86.png)
+
+4. Crear Cuenta:
+
+```bash
+mkdir -p ~/.starkli-wallets/deployer
+starkli signer keystore new ~/.starkli-wallets/deployer/Signer_Min.json
+```
+
+- Configurar Variables:
+
+```bash
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Min.json
+export STARKNET_RPC="https://starknet-testnet.public.blastapi.io"
+starkli account oz init ~/.starkli-wallets/deployer/Account_Min.json
+```
+
+Enviar fondos, revise [faucet](https://faucet.goerli.starknet.io/) y desplege la cuenta:
+
+```bash
+starkli account deploy /home/nadai/.starkli-wallets/deployer/Account_Min.json
+```
+
+5. Compilar, Declarar y Desplegar el Contrato:
+
+Dentro de la carpeta `l2` y compile usando Scarb:
+
+```bash
+scarb build
+```
+
+- Ahora declaremos el contrato, primero pasamos las 3 Variables junto con el `declare`:
+
+```bash
+export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Min.json
+export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Min.json
+export STARKNET_RPC="https://starknet-testnet.public.blastapi.io"
+starkli declare ./target/dev/workshop_l2_hola.contract_class.json
+```
+
+Finalmente, desplegar el contrato `Hola.cairo`, asegurándote de revisar los argumentos del constructor, en este caso es un `name` que se guarda en el `storage` y deberemos pasar también el `class contract` que queremos desplegar.
+
+```bash 
+starkli deploy 0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c 0x4e61646169
+```
+
+* [Contract Hola.cairo](https://goerli.voyager.online/contract/0x01616548ed1a317fc534032f969d47e41da61fc4f691fe1bddf9c0d76c08adc0#writeContract)
+
+
