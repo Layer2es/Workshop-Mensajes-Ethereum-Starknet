@@ -965,15 +965,18 @@ Este será el valor del selector que utilizaremos al enviar el mensaje de L1->L2
 * Selector: Función interna en el Contrato de L2 indicada con L1 Handler que queremos utilizar
 * Payload: Valor que queremos pasar
 
-    <img src="assets/image-70.png">
-<div style="display: flex; justify-content: center;">
-    <img src="assets/image-71.png" alt="Image 2" style="width: 200px; height: auto;">
-</div>
-<div style="display: flex; justify-content: center;">
+<p align="center">
+  <img src="assets/image-70.png">
+</p>
 
-[Transacción de L1 a L2](https://goerli.etherscan.io/tx/0xef828cf44cba2d7420ef383da3a7ec078de4f57d6922204881da14638fc0b908)
+<p align="center">
+  <img src="assets/image-71.png" alt="Image 2" style="width: 200px; height: auto;">
+</p>
 
-</div>
+<p align="center">
+  <a href="https://goerli.etherscan.io/tx/0xef828cf44cba2d7420ef383da3a7ec078de4f57d6922204881da14638fc0b908">Transacción de L1 a L2</a>
+</p>
+
 
 ---
 
