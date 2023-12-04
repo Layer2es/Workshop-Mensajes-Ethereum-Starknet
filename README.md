@@ -339,9 +339,11 @@ Starkli emplea `firmantes` o `signers` para autorizar transacciones. Estos puede
 
 4. **Fondear Cuenta:** Nuestro Contrato de Cuenta necesita fondos para cobrar vida, en este caso usaremos el [Faucet](https://faucet.goerli.starknet.io/), puede revisar las otras pociones [aquí](https://github.com/Layer2es/Workshop-Mensajes-Ethereum-Starknet#conseguir-faucet)
 
+<div style="display: flex; justify-content: center;">
     <img src="assets/image-32.png" alt="Image 1" style="width: 200px; height: auto;">
     <img src="assets/image-30.png" alt="Image 2" style="width: 200px; height: auto;">
     <img src="assets/image-31.png" alt="Image 3" style="width: 200px; height: auto;">
+</div>
 
 5. **Desplegar Cuenta:** Ahora todo está listo para desplegar nuestro Contrato de Cuenta del Estándar de OZ ejecutando el comando `starkli account deploy` con la ruta donde añadimos nuestra Cuenta.
 
@@ -367,8 +369,11 @@ Starkli emplea `firmantes` o `signers` para autorizar transacciones. Estos puede
     * **Para Argent X:** Puede encontrarla en la sección "Configuración" → Seleccione su cuenta → "Exportar clave privada".
     * **Para Braavos:** Puede encontrarla en la sección "Configuración" → "Privacidad y seguridad" → "Exportar clave privada".
 
+<div style="display: flex; justify-content: center;">
     <img src="assets/image-37.png" alt="Image 1" style="width: 200px; height: auto;">
     <img src="assets/image-38.png" alt="Image 2" style="width: 200px; height: auto;">
+</div>
+
 
 
 3. **Cree un firmante:** Con Starkli y utilizando la clave privada que tendrá que añadir, más un password si quiere añadir una contraseña para su seguridad, esto configurará su Contrato de Cuenta desde Argent o Braavos, para ello creemos el `signer` con el siguiente comando:
@@ -960,11 +965,17 @@ Este será el valor del selector que utilizaremos al enviar el mensaje de L1->L2
 * Selector: Función interna en el Contrato de L2 indicada con L1 Handler que queremos utilizar
 * Payload: Valor que queremos pasar
 
-![Alt text](assets/image-70.png)
+    <img src="assets/image-70.png">
+<div style="display: flex; justify-content: center;">
+    <img src="assets/image-71.png" alt="Image 2" style="width: 200px; height: auto;">
+</div>
+<div style="display: flex; justify-content: center;">
 
-![Alt text](assets/image-71.png)
+[Transacción de L1 a L2](https://goerli.etherscan.io/tx/0xef828cf44cba2d7420ef383da3a7ec078de4f57d6922204881da14638fc0b908)
 
-* [Transacción de L1 a L2](https://goerli.etherscan.io/tx/0xef828cf44cba2d7420ef383da3a7ec078de4f57d6922204881da14638fc0b908)
+</div>
+
+---
 
 Observamos que el mensaje llega casi instantáneamente de L1 a L2 con el estado `Enviado a L2`.
 
