@@ -66,37 +66,36 @@
 - [Pre-requisitos](#pre-requisitos)
  - [Git](#git)
  - [Curl](#curl)
+ - [Clonado Repositorio](#clonado-repositorio)
 - [Instalación de Starkli](#instalación-de-starkli)
 - [Instalación de Scarb](#instalación-de-scarb)
 - [Instalación de Dojo y Katana](#instalación-de-dojo-y-katana)
 - [Conseguir Faucet](#conseguir-faucet)
-- [Cuentas y Firmantes](#cuenta-y-firmantes)
-    - [Crear Cuenta con Starkli (Opción A)](#crear-cuenta-con-starkli-opción-a)      
-    - [Desplegar Contrato de Cuenta A](#desplegar-contrato-de-cuenta-a)
-    - [Crear Cuenta ArgentX o Braavos (Opción B)](#crear-cuenta-argentx-o-braavos-opción-b)
-    - [Desplegar Contrato de Cuenta B](#desplegar-contrato-de-cuenta)
-- [Configuración de Variables de Entornos](#configuración-de-variables-de-entorno-b)
+- [Crear Contrato de Cuenta y Firmantes](#crear-contrato-de-cuenta-y-firmantes)
+- [Creación de Firmantes con Starkli](#creación-de-firmantes-con-starkli)      
+    - [Opción A: Crear Cuenta, Firmante y Descriptor de Cuenta con OZ](#opción-a-crear-cuenta-firmante-y-descriptor-de-cuenta-con-oz)
+    - [Opción B: Crear Cuenta, Firmante y Descriptor de Cuenta con Argent o Braavos](#opción-b-crear-cuenta-firmante-y-descriptor-de-cuenta-con-argent-o-braavos)
 - [Integrando Scarb en tu Flujo de Desarrollo](#integrando-scarb-en-tu-flujo-de-desarrollo)
-    - [Inicialización del Proyecto](#inicialización-del-proyecto)
-    - [Desarrollo del Contrato Hola.cairo](#desarrollo-del-contrato)
     - [Gestión de Dependencias](#gestión-de-dependencias)
     - [Extensión Cairo VS Code](#extensión-cairo-vs-code)
-    - [Compilación del Contrato Hola.cairo](#compilación-del-contrato)
-- [Declare del Contrato Hola.cairo con Starkli](#declare-del-contrato-con-starkli)
-- [Despliegue del Contrato Hola.cairo con Starkli](#despligue-del-contrato-con-starkli)
-- [Katana con Starkli]
-    - [Compilar, Desplegar e Interactuar con el Contrato Owner.cairo]
-- [Invocando Contratos con Starkli](#invocando-contratos-con-starkli)
-- [Workshop Mensajes L2<->L1]
-    - [Compile y Deploy en Remix Contract L1]
-    - [Compile y Deploy con Starkli Contract L2]
-    - [Manejos de Mensajes enviados y consumirlos]
-- [Comandos Extras de Starkli](#comandos-starkli)
+    - [Compilación de Contratos](#compilación-de-contratos)
+    - [Configuración de Variables de Entornos](#configuración-de-variables-de-entornos)
+    - [Declarar Contrato Hola.cairo con Starkli](#declarar-contrato-holacairo-con-starkli)
+    - [Despliegue del Contrato Hola.cairo con Starkli](#despliegue-del-contrato-holacairo-con-starkli)
+- [Katana](#katana)
+    - [Declaración y despliegue de Owner.cairo](#declaración-y-despliegue-de-ownercairo)
+    - [Interacción con contratos en Katana](#interacción-con-contratos-en-katana)
+- [Workshop de Mensajes L2<->L1](#workshop-de-mensajes-l2-l1)
+    - [Remix: Compilando y Desplegando](#remix-compilando-y-desplegando)
+    - [Manejos de Mensajes enviados y consumirlos](#manejos-de-mensajes-enviados-y-consumirlos)
+    - [Desplegando e Interactuando con WorkshopMensajesL2.cairo](#desplegando-e-interactuando-con-workshopmensajesl2cairo)
 - [Gestión de Dependencias Externas en Scarb](#gestión-de-dependencias-externas-en-scarb)
-
+- [Comandos Starkli](#comandos-starkli)
+- [RPC](#rpc)
+- [MIN Deploy](#min-deploy)
+   
 
 ---
-
 
 ## Pre-requisitos
 Antes de empezar, asegúrese de tener instalados los siguientes pre-requisitos en su sistema:
@@ -279,7 +278,6 @@ Aquí hay varios enlaces y métodos que le proporcionaremos para que pueda despl
 ---
 
 ## Crear Contrato de Cuenta y Firmantes
-
 Las billeteras inteligentes en Starknet se componen de dos elementos: un `firmante` y un `descriptor de cuenta`. Estos elementos son esenciales para interactuar con Starknet, permitiendo firmar transacciones y proporcionando información relevante sobre la billetera inteligente.
 
 - El `firmante` es un contrato inteligente capaz de firmar transacciones, cuya clave privada es necesaria para su creación.
@@ -294,7 +292,6 @@ Usaremos 2 opciones para crear nuestra cuenta:
 ---
 
 ## Creación de Firmantes con Starkli
-
 Starkli emplea `firmantes` o `signers` para autorizar transacciones. Estos pueden ser contratos inteligentes o archivos que almacenan claves privadas. Aquí se presenta cómo crear un firmante utilizando Starkli:
 
 ### Opción A: Crear Cuenta, Firmante y Descriptor de Cuenta con OZ
@@ -474,7 +471,7 @@ Con la extensión `Cairo 1` configurada en su entorno de Visual Studio Code, est
 
 ---
 
-### Compilación del Contrato
+### Compilación de Contratos
 Ahora procederemos a compilar nuestros contratos definidos en [`lib.cairo`](/Workshop-Mensajes-Ethereum-Starknet/l2/src/lib.cairo), en este caso recordamos que será un [`Hola.cairo`](/Workshop-Mensajes-Ethereum-Starknet/l2/src/Hola.cairo), el [`Owner.cairo`](/Workshop-Mensajes-Ethereum-Starknet/l2/src/Owner.cairo) y el [`WorkshopMensajesL2.cairo`](/Workshop-Mensajes-Ethereum-Starknet/l2/src/WorkshopMensajesL2.cairo). Si ha clonado este repositorio (recuerde que puede hacerlo con el comando `git clone git@github.com:Layer2es/Workshop-Mensajes-Ethereum-Starknet.git`), tendremos que entrar en la carpeta de `Workshop-Mensajes-Ethereum-Starknet/l2` en la que se encontrarán los contratos de Cairo y le bastará con ejecutar un comando para llevar a cabo la compilación:
 
 ```bash
@@ -488,7 +485,7 @@ Si todo ha ido bien, se debería crear una carpeta `dev/target` que contendrá l
 
 ---
 
-## Variables de Entorno
+### Configuración de Variables de Entornos
 Una vez tengamos todo preparado realizaremos la declaración del `Hola.cairo`, está declaración nos servirá para establecer una estrucutra que nos sirva para usar en el futuro y si queremos volver a usar este contrato, solo usar su mismo `Class Hash` que nos ha dado, y pasar los argumentos del construcutor que queremos, asi podrimaos tener un `Class hash` por ejemplo de un `ERC-20` standard o con ciertas propiedades, pero cada uno con su owner, nombre, simbolo, total supply o diferentes lógicas que sean  programadas.
 
 Siempre es importante verificar que los `EXPORT` se hayan realizado correctamente para interactuar con la red de Starknet, podemos definir 3 maneras útiles para manejar nuestras variables de entorno necesarias.
@@ -511,7 +508,7 @@ export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_WorkshopL2.json
 export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
 ```
 
-# Variables de Entorno de Starknet Braavos/Argent 
+**Variables de Entorno de Starknet Braavos/Argent** 
 
 ```bash
 export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Braavos.json
@@ -519,7 +516,7 @@ export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Braavos.json
 export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
 ```
 
-# Variables de Entorno de Katana
+**Variables de Entorno de Katana**
 
 ```bash
 export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/AccountKatana_Workshop.json
@@ -605,7 +602,7 @@ source .env
 
 ---
 
-### Declarar Contrato con Starkli:
+### Declarar Contrato Hola.cairo con Starkli
 Si nos encontramos en la carpeta raíz de nuestro proyecto, tenemos dos opciones: ir directamente a nuestra carpeta `dev` y ejecutar `declare` con `starkli`:
 
 ```bash
@@ -628,7 +625,7 @@ En este ejemplo, usaremos `Class hash declared: 0x07f445377d79d98b866338dcfae6f9
 
 ---
 
-### Despliegue del Contrato Hola con Starkli
+### Despliegue del Contrato Hola.cairo con Starkli
 Ahora que hemos declarado nuestro contrato, si no se había hecho anteriormente y es único, podemos omitir la declaración y proceder directamente al despliegue. Para ello, debemos asegurarnos de revisar los argumentos que se pasan al constructor del contrato. En primer lugar, debemos proporcionar el `Class hash` del contrato que queremos desplegar, en este caso será `0x07f445377d79d98b866338dcfae6f9003f43b26124f84dcb2d4cda4542f1599c`. 
 
 Además, en el constructor (en caso de que lo haya) debemos revisar los argumentos que necesitamos para desplegar nuestro contrato, en este caso sólo necesitamos un `Nombre` que queramos guardar en nuestro `storage` del contrato para el `Hola.cairo` pero debemos revisar cada constructor para el resto de contratos de `Owner.cairo` y `WorkshopMensajesL2.cairo` 
@@ -712,7 +709,7 @@ También podemos revisar en los explorer que todo ha sido actualizado y la invoa
 
 ---
 
-### Katana:
+## Katana
 Ahora con Katana, configuraremos un Owner. Podríamos usar un keystore similar al de las otras cuentas. Primero, accederemos a `katana`. Tenemos la opción de levantar este nodo local para interactuar con él. Recomendamos ejecutarlo con la opción `--disable-fee` para evitar problemas de costos de gas por transacción. En este ejemplo, configuraremos `katana` para lanzar solo `3 cuentas`, en lugar de las `10 cuentas` predeterminadas. Luego, dividiremos la terminal en dos para continuar.
 
 ```bash
@@ -838,8 +835,6 @@ Luego, procederemos a compilar el proyecto. Deberemos asegurarnos de seleccionar
 
 Tendremos que indicar los valores que necesita el constructor para desplegar. En este caso, la dirección del Contrato del Starknet Core desplegado en Goerli, que controla y es responsable de todas las syscall. La dirección en Goerli de Ethereum es `0xde29d060D45901Fb19ED6C6e959EB22d8626708e`.
 
-![Alt text](assets/image-52.png)
-
 ![Alt text](assets/image-53.png)
 
 Una vez confirmada la transacción, nuestro contrato estará desplegado. Para interactuar con él desde el Explorador, deberemos verificar este contrato. Podemos bajarnos el plugin de `Contract verification - Etherscan`, pero primero necesitaremos crearnos una `API KEY` para poder verificarlo correctamente.
@@ -909,6 +904,8 @@ El contrato de Mensajería de L2 en Cairo está listo para ser utilizado.
 * [Contrato Mensajes L1](https://goerli.etherscan.io/tx/0x7bc724e0f30cb79a5f75a29a065822f029cf13a36458f136d3bf4ee1ee81c106)
 * [Contrato Mensajes L2](https://testnet.starkscan.co/search/0x0771b629cb3ff29a7af8369a18e02050b2cccd53bcd4594c9d96718dc3edd9ef)
 
+
+### Manejos de Mensajes enviados y consumirlos
 Ahora procederemos a enviar nuestros mensajes entre L1<->L2. Es esencial comprender el manejo de mensajes y sus estados:
 
 #### **De L1 a L2:**
@@ -996,7 +993,7 @@ scarb rm alexandria_math
 Con estas herramientas, puedes gestionar tus dependencias de manera eficiente en Scarb y mantener tu proyecto organizado.
 
 ---
-
+## Comandos Starkli
 ### Call
 Desde Starkli, puedes cambiar el estado de un contrato, realizar operaciones o hacer consultas a datos y estados de la blockchain. Así que comprobemos si nuestro contrato de `Owner.cairo` tiene la dirección del contrato de la cuenta que hemos añadido. Para ello, debemos realizar una `call` e indicar qué función queremos invocar. Lo bueno de Starknet son los selectores, y en este caso, llamaremos a la función `get_owner` del contrato para obtener información sobre quién es el propietario, en este caso sólo es una `call` que no modifica el estado.
 
