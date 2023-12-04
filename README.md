@@ -15,13 +15,13 @@
 <a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
 <img src="https://img.shields.io/badge/Workshop L2: 1ª Clase-Youtube-red?logo=youtube"/>
 </a>
-<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<a href="https://www.youtube.com/watch?v=RG3pYw18CPo&t=9s">
 <img src="https://img.shields.io/badge/Workshop L2: 2ª Clase-Youtube-red?logo=youtube"/>
 </a>
-<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<a href="https://www.youtube.com/live/dgV34Pkvm5o?si=X342hdTOCzeCWwaM">
 <img src="https://img.shields.io/badge/Workshop L2: 3ª Clase-Youtube-red?logo=youtube"/>
 </a>
-<a href="https://www.youtube.com/live/xw9zuXyrStE?si=4QtHcuT7qb399JLX">
+<a href="https://www.youtube.com/live/_J_3tqv3x5w?si=IEfBomm2_gShWUZv">
 <img src="https://img.shields.io/badge/Workshop L2: 4ª Clase-Youtube-red?logo=youtube"/>
 </a>
     <br/><br/>
@@ -85,16 +85,25 @@
 - [Katana](#katana)
     - [Declaración y despliegue de Owner.cairo](#declaración-y-despliegue-de-ownercairo)
     - [Interacción con contratos en Katana](#interacción-con-contratos-en-katana)
-- [Workshop de Mensajes L2<->L1](#workshop-de-mensajes-l2-l1)
+- [Workshop de Mensajes L2<->L1 📨](#workshop-de-mensajes-l2-l1)
     - [Remix: Compilando y Desplegando](#remix-compilando-y-desplegando)
-    - [Manejos de Mensajes enviados y consumirlos](#manejos-de-mensajes-enviados-y-consumirlos)
     - [Desplegando e Interactuando con WorkshopMensajesL2.cairo](#desplegando-e-interactuando-con-workshopmensajesl2cairo)
+    - [Manejos de Mensajes enviados y consumirlos](#manejos-de-mensajes-enviados-y-consumirlos)
+        - [Envios de L1->L2](#envios-de-l1-l2)
+        - [Envios de L2->L1](#envios-de-l2-l1)
 - [Gestión de Dependencias Externas en Scarb](#gestión-de-dependencias-externas-en-scarb)
 - [Comandos Starkli](#comandos-starkli)
+    - [Call](#call)
+    - [Invoke](#invoke)
+    - [Obtener el Class Hash de un Contrato Desplegado](#obtener-el-class-hash-de-un-contrato-desplegado)
+    - [Obtener Detalles del Contrato a partir del Class Hash](#obtener-detalles-del-contrato-a-partir-del-class-hash)
+    - [Conseguir Selector](#conseguir-selector)
+    - [Balance de ETH](#balance-de-eth)
+    - [Estado de Sincronización Actual](#estado-de-sincronización-actual)
+    - [Otros Comandos](#otros-comandos)
 - [RPC](#rpc)
-- [MIN Deploy](#min-deploy)
+- [MIN Deploy💥](#min-deploy)
    
-
 ---
 
 ## Pre-requisitos
@@ -872,7 +881,6 @@ Podrás verificar que tu contrato no esté verificado previamente y que no pueda
 ---
 
 ### Desplegando e Interactuando con WorkshopMensajesL2.cairo
-
 A pesar de que podríamos seguir utilizando Remix para desplegar Workshop Mensajes L2, nos enfocaremos en la CLI para practicar. Utilizaremos la cuenta de Braavos para llevar a cabo este proceso.
 
 Primero, configuramos las variables. Aunque dejaremos las variables aquí para configurarlas manualmente, recuerda que existen diversos métodos para gestionarlas.
@@ -880,7 +888,7 @@ Primero, configuramos las variables. Aunque dejaremos las variables aquí para c
 ```bash
 export STARKNET_ACCOUNT=~/.starkli-wallets/deployer/Account_Braavos.json
 export STARKNET_KEYSTORE=~/.starkli-wallets/deployer/Signer_Braavos.json
-export STARKNET_RPC="https://starknet-goerli.infura.io/v3/6e7788ff3c784159993c45a949172f0e"
+export STARKNET_RPC="https://imited-rpc.nethermind.io/goerli-juno"
 ```
 
 Dentro de la carpeta `l2`, ejecutamos `scarb build`. En el comando `declare`, indicamos el contrato `WorkshopMensajesL2` en formato `.json` en Sierra.
@@ -920,21 +928,30 @@ Ahora procederemos a enviar nuestros mensajes entre L1<->L2. Es esencial compren
 
 Estos estados reflejan cómo los mensajes atraviesan diferentes capas (L1 y L2) y cómo se procesan y utilizan en cada una de ellas hasta su estado finalizado o consumido.
 
+### Envios de L1->L2
 Para enviar mensajes, es necesario tener `#[l1_handler]` indicado para realizar una `syscall` y el selector de la función deseada, como `recibir_mensaje_valor_l1`. Además, el valor enviado desde L1 debe cumplir con condiciones específicas, como la carga útil añadida en `assert(value == 123)`, y especificar `from_address` del contrato de L1 que envía el mensaje (WorkshopMensajesL1).
 
-    ```bash
-    #[l1_handler]
-    fn recibir_mensaje_valor_l1(ref self: ContractState, from_address: felt252, value: felt252) {
-        // assert(from_address == ...);
-        // Valor fijo para ser válido == 123
+```bash
+#[l1_handler]
+fn recibir_mensaje_valor_l1(ref self: ContractState, from_address: felt252, value: felt252) {
+    // assert(from_address == ...);
+    // Valor fijo para ser válido == 123
 
-        assert(value == 123, 'Valor inválido');
-    }
-    ```
+    assert(value == 123, 'Valor inválido');
+}
+```
 
-Podríamos calcular el selector directamente con un keccak256, pero es más sencillo usar [Stark Utils](https://stark-utils.vercel.app/converter), donde obtendremos el selector en felt. En este caso, usaremos `488620836784764677921038031667344270694842985450521428815152577605510277981`.
+Podríamos calcular el selector directamente con un keccak256, pero es más sencillo usar [Stark Utils](https://stark-utils.vercel.app/converter) o convertirlo con `starkli selector recibir_mensaje_valor_l1`, donde obtendremos el selector en felt o en hexa. En este caso, usaremos `488620836784764677921038031667344270694842985450521428815152577605510277981`.
 
 ![Alt text](assets/image-69.png)
+
+Pero si pasamos el comando para conseguir el selector de un nombre nos devolverá el valor en hexa, que también nos valdría:
+
+```bash
+starkli selector recibir_mensaje_valor_l1
+```
+
+![Alt text](assets/image-96.png)
 
 Este será el valor del selector que utilizaremos al enviar el mensaje de L1->L2 si queremos utilizar esa función específica. Para ello, debemos ir al contrato desplegado en L1 e indicar los valores correspondientes para [enviar_Mensaje_Starknet](https://goerli.etherscan.io/address/0xf2dcf405fe5ce4000f1637e9b65ac6f7416e43a0#writeContract#F4):
 
@@ -961,11 +978,20 @@ Si todo ha salido bien, no deberás realizar ningún paso adicional. Verificará
 
 ![Alt text](assets/image-74.png)
 
-Ahora, para enviar un Mensaje de L2->L1, lo haremos desde nuestro contrato de L2. Deberemos indicar la dirección del contrato con el que interactuaremos en L1, siempre y cuando pueda recibir y enviar mensajes. Una vez el mensaje llegue (puede tardar minutos u horas), podremos consumirlo desde L1.
+Podemos verificar otra vez pasado las 4 o 6 horas, que el mismno `hash` ahora tiene otro evento de mensajes, en este caso es la finalización del contrato en L1
+
+![Alt text](assets/image-87.png)
+
+![Alt text](assets/image-88.png)
+
+---
+
+### Envíos de L2->L1
+Ahora, para realizar un Envío de Mensaje de L2->L1, vamos a proceder desde nuestro contrato en L2. Necesitaremos indicar la dirección del contrato con el cual interactuaremos en L1, siempre y cuando tenga la capacidad de recibir y enviar mensajes. Una vez que el mensaje llegue **(este proceso puede tardar entre 4 a 6 horas)**, podremos consumirlo desde L1.
 
 ![Alt text](assets/image-76.png)
 
-* [Envío Mensaje de L2->L1](https://goerli.voyager.online/tx/0x68b5e2d1eef973133bd3f7e1b2c99239aa02c8c4406211e096253009b6703c0)
+* [Envío de Mensaje de L2->L1](https://goerli.voyager.online/tx/0x68b5e2d1eef973133bd3f7e1b2c99239aa02c8c4406211e096253009b6703c0)
 
 Ahora observaremos la actualización de mensajes enviados desde L2->L1.
 
@@ -973,7 +999,17 @@ Ahora observaremos la actualización de mensajes enviados desde L2->L1.
 
 ![Alt text](assets/image-78.png)
 
-Este mensaje no podrá ser consumido hasta que se adjunte a L1. Este paso se realiza manualmente para evitar posibles ataques y garantizar una seguridad de 2FA. Solo nosotros podremos consumir ese mensaje y aceptar lo que conlleva, como un dato de Valor 123.
+Este mensaje no podrá ser consumido hasta que se adjunte a L1. Este paso se realiza manualmente para evitar posibles ataques y garantizar una seguridad de 2FA. Solo nosotros podremos consumir ese mensaje y aceptar lo que conlleva, como un dato de Valor `123`. Puedes revisar cómo falla la transacción si indicamos valores incorrectos al intentar consumir el mensaje enviado desde L2.
+
+![Alt text](assets/image-90.png)
+
+![Alt text](assets/image-89.png)
+
+Una vez consumido correctamente, podemos verificar en el registro de L2->L1 que el mensaje ha sido `consumido en L1` de manera adecuada.
+
+![Alt text](assets/image-91.png)
+
+Con esta sección, hemos interactuado con todos los posibles estados de mensajes entre L2<->L1, creando envíos cross-chain sin depender de un tercero de confianza. Hemos establecido nuestro propio sistema para enviar acciones desde L1->L2. Podemos considerar, en lugar de enviar un valor que solo se refleje en L2, bloquear una cantidad de tokens en el contrato de L1 y mintear su equivalencia en L2. Hemos creado nuestros propios contratos para interactuar entre L1<->L2. ¡Felicidades!
 
 --- 
 
@@ -993,6 +1029,7 @@ scarb rm alexandria_math
 Con estas herramientas, puedes gestionar tus dependencias de manera eficiente en Scarb y mantener tu proyecto organizado.
 
 ---
+
 ## Comandos Starkli
 ### Call
 Desde Starkli, puedes cambiar el estado de un contrato, realizar operaciones o hacer consultas a datos y estados de la blockchain. Así que comprobemos si nuestro contrato de `Owner.cairo` tiene la dirección del contrato de la cuenta que hemos añadido. Para ello, debemos realizar una `call` e indicar qué función queremos invocar. Lo bueno de Starknet son los selectores, y en este caso, llamaremos a la función `get_owner` del contrato para obtener información sobre quién es el propietario, en este caso sólo es una `call` que no modifica el estado.
@@ -1012,7 +1049,100 @@ starkli invoke --watch 0x028491f9e3d8b0005a649e08833330de371b5e227be05a0e0575f24
 
 ---
 
+### Obtener el Class Hash de un Contrato Desplegado
+Para obtener el `class hash` de un contrato desplegado, es necesario proporcionar la dirección del contrato. En este ejemplo, utilizaremos el contrato [WorkshopMensajesL2.cairo](https://goerli.voyager.online/contract/0x0771b629cb3ff29a7af8369a18e02050b2cccd53bcd4594c9d96718dc3edd9ef#writeContract), cuya dirección es `0x0771b629cb3ff29a7af8369a18e02050b2cccd53bcd4594c9d96718dc3edd9ef`. Este comando proporcionará el `class hash` del contrato.
+
+```bash
+starkli class-hash-at 0x0771b629cb3ff29a7af8369a18e02050b2cccd53bcd4594c9d96718dc3edd9ef
+```
+
+![Alt text](assets/image-92.png)
+
+---
+
+### Obtener Detalles del Contrato a partir del Class Hash
+Para visualizar el archivo `Sierra.json` desplegado en la red, incluyendo las funciones/selector o el ABI del contrato en formato Sierra, podemos utilizar el comando `starkli class-by-hash` o `starkli class-at`. Ambos comandos deberían proporcionar el mismo resultado:
+
+```bash
+starkli class-by-hash 0x03ac40c1e3bde07fe4fb81623fdbb72fd1c34a6bcb492712c38997f1adcadea5
+```
+
+```bash
+starkli class-at 0x0771b629cb3ff29a7af8369a18e02050b2cccd53bcd4594c9d96718dc3edd9ef
+```
+
+Estos comandos devolverán la información solicitada, incluyendo el `Sierra.json` del contrato desplegado y sus detalles asociados.
+
+![Alt text](assets/image-94.png)
+![Alt text](assets/image-95.png)
+
+---
+
+### Conseguir Selector
+Podemos conseguir el selector de cualqueir función indicando su nombre con el comando siguiente:
+
+```bash
+starkli selector nombre_funcion
+```
+
+![Alt text](assets/image-97.png)
+
+---
+
+### Balance de ETH
+Una forma sencilla de saber nuestro balance de `ETH` en las cuentas sin tener que ir a la wallet o al explorador es consultandolo con el siguiente comando:
+
+```bash
+starkli balance 0x027f68d0d0f474b1a25f359a42dc49a3003a3522d71765a5e7658e68520d7826
+```
+
+![Alt text](assets/image-98.png)
+
+---
+
+### Estado de Sincronización Actual
+Se puede obtener información sobre la sincronización actual del nodo en la red Starknet, incluyendo detalles desde el bloque inicial hasta el bloque actual y el bloque más alto, utilizando el siguiente comando:
+
+```bash
+starkli syncing
+```
+
+![Alt text](assets/image-93.png)
+
+Este comando devuelve un conjunto de datos que incluyen:
+
+- `starting_block_hash`: Hash del bloque desde el cual comenzó la sincronización.
+- `starting_block_num`: Número del bloque desde el cual comenzó la sincronización.
+- `current_block_hash`: Hash del bloque actual en el que se encuentra el nodo.
+- `current_block_num`: Número del bloque actual en el que se encuentra el nodo.
+- `highest_block_hash`: Hash del bloque más alto sincronizado hasta el momento.
+- `highest_block_num`: Número del bloque más alto sincronizado hasta el momento.
+
+
+Estos datos son útiles para verificar el estado de sincronización del nodo Starknet y determinar la última información disponible en la red.
+
+---
+
+### Otros Comandos
+Puede revisar el resto de comandos con `--help`, esto le mostrará todas las opciones disponibles para que pruebe e interactue en saber interpretar los datos provenientes de Starknet.
+
+```bash
+starkli --help
+```
+
+![Alt text](assets/image-99.png)
+
+---
+
 ## RPC
+RPC (Remote Procedure Call) es un protocolo que permite a un programa solicitar servicios a otro a través de una red, incluso en sistemas remotos. En el contexto de Starknet, el RPC es la interfaz que permite a los desarrolladores interactuar con la red Starknet para realizar diversas operaciones y acceder a funciones específicas.
+
+Con el lanzamiento de la versión 0.13.0 de Starknet, se desactivará el uso del gateway del secuenciador, lo que significa que los usuarios ya no podrán acceder a ciertas funcionalidades a través de ese método, eliminando poco a poco la confianza de los nodos sobre el secuenciador. En su lugar, se requerirá el acceso a través del protocolo RPC para realizar acciones y acceder al estado o servicios en la red Starknet, también se lanzará SEPOLIA.
+
+Es importante tener en cuenta esta actualización en camino a la descentralización, ya que cualquier interacción previa que se realizara utilizando el gateway del secuenciador deberá ser modificada para utilizar las nuevas funciones y servicios disponibles a través de los RPC disponibles en la versión 0.13.0 y posteriores de Starknet.
+
+Para obtener detalles específicos sobre las versiones y las funciones disponibles en el RPC de Starknet, puedes consultar la [versión oficial de los documentos](https://docs.starknet.io/documentation/tools/api-services/) que se encuentra en la documentación oficial. Las tablas posteriores proporcionan información más detallada sobre las versiones específicas y sus funcionalidades asociadas.
+
 
 | Nombre Provider | Sitio del Provider                                                                               | Open API endpoint                           |
 |-----------------|--------------------------------------------------------------------------------------------------|---------------------------------------------|
@@ -1024,14 +1154,38 @@ starkli invoke --watch 0x028491f9e3d8b0005a649e08833330de371b5e227be05a0e0575f24
 | Lava Protocol   | [www.lavanet.xyz](https://www.lavanet.xyz)                                                     | [https://www.lavanet.xyz/get-started/starknet](https://www.lavanet.xyz/get-started/starknet) |
 | Nethermind      | [starknetrpc.nethermind.io](http://starknetrpc.nethermind.io/)                                 | [http://starknetrpc.nethermind.io](http://starknetrpc.nethermind.io) |
 
+---
 
-https://limited-rpc.nethermind.io/goerli-juno
-https://starknet-testnet.public.blastapi.io/rpc/v0.5
-https://rpc.starknet-testnet.lava.build
+Algunas endpoint son abiertos y públicos sin la necesidad de crear uno propio y aprovechar su servicio, aunque recomendamos que cada uno se cre su propio API KEY del rpc.
+
+* https://starknet-testnet.public.blastapi.io
+* https://rpc.starknet-testnet.lava.build
+
+---
+
+Aquí podremos ver la compatiblidad de las Versiones de `Starknet.js`, `Devnet-rs` y `Starknet.go`
+
+| RPC Version | Starknet.js Release | Devnet-rs Release | Starknet.go Release |
+|-------------|---------------------|--------------------|---------------------|
+| v0.4.0      | v5.22.0             | [Tag](https://github.com/0xSpaceShard/starknet-devnet-rs/releases/tag/json-rpc-v0.4.0) | [v0.4.6](https://github.com/NethermindEth/starknet.go/releases/tag/v0.4.6) |
+| v0.5.0      | v5.23.0             | [Tag](https://github.com/0xSpaceShard/starknet-devnet-rs/releases/tag/json-rpc-v0.5.0) | [v0.5.0](https://github.com/NethermindEth/starknet.go/releases/tag/v0.5.0) |
+| v0.5.1      | v5.24.3             | Latest Main Branch Commit | [v0.5.0](https://github.com/NethermindEth/starknet.go/releases/tag/v0.5.0) |
+| v0.6.0      | TBD                 | TBD                | TBC                 |
+
+---
+
+Aquí podremos ver la compatiblidad de las Versiones fijandonos en los nodes de `Pathfinder`, `Juno` y `Papyrus`
+
+| RPC Version | Pathfinder + Pathfinder powered providers | Juno | Papyrus |
+|-------------|-------------------------------------------|------|---------|
+| v0.4.0      | - Blast public: https://starknet-testnet.public.blastapi.io/rpc/v0.4<br>- Blast for user: https://starknet-testnet.blastapi.io/xxx6/rpc/v0.4<br>- Lava public: https://json-rpc.starknet-testnet.public.lavanet.xyz<br>- Alchemy: https://starknet-goerli.g.alchemy.com/v2/ + apiKey<br>- Infura: https://starknet-goerli.infura.io/v3/ + apiKey             | /v0_4 endpoint |  |
+| v0.5.0      | - Blast public: https://starknet-testnet.public.blastapi.io/rpc/v0.5<br>- Blast for user: https://starknet-testnet.blastapi.io/xxx6/rpc/v0.5<br>- Alchemy: https://starknet-goerli.g.alchemy.com/starknet/version/rpc/v0.5/ + apiKey          |  |  |
+| v0.5.1      | - Chainstack: https://{node-id}.p2pify.com/{apiKey}         | https://limited-rpc.nethermind.io/goerli-juno/v0_5<br>https://free-rpc.nethermind.io/goerli-juno/v0_5 |  |
+| v0.6.0      | https://github.com/eqlabs/pathfinder/releases/tag/v0.10.0                |                |                 |
 
 
+---
 
-https://docs.starknet.io/documentation/tools/api-services/
 
 ## MIN Deploy
 
